@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Heads</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #60a5fa33, #a855f733);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            padding: 2rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 3px solid #6955D2;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .profile {
+            transform: scale(1.1);
+        }
+
+        .domain-badge {
+            background: linear-gradient(135deg, #60a5fa, #a855f7);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+        }
+
+        .head-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-content {
+            padding: 0 2rem 2rem;
+        }
+
+        .ideas-count {
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .call-btn {
+            background: linear-gradient(135deg, #60a5fa, #a855f7);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .call-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .call-btn:hover::before {
+            left: 100%;
+        }
+
+        .call-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .na-text {
+            color: #94a3b8;
+            text-align: center;
+            padding: 1rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .card-header {
+                padding: 1.5rem;
+            }
+
+            .profile {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Domain Heads</h1>
+   <p>Contact your domain Head</p>
+        </div>
+
+        <div class="grid">
+            <script>
+                let data = [
+                    { domain: "IoT", head: "Sri Vidhya", ideas: 5, mobile: "+91 89251 06789" },
+                    { domain: "Game", head: "Hariharan, Shivanithish, Barat", ideas: 3, mobile: "6380566793,7200420754,8668184874" },
+                    { domain: "AI", head: "Sankar", ideas: 1, mobile: "9597507100" },
+                    { domain: "Blockchain", head: "Surya Prakash", ideas: 1, mobile: "+91 93630 93078" },
+                    { domain: "Network", head: "Deeksha", ideas: 3, mobile: "+91 63825 50184" },
+                    { domain: "UI", head: "Ganesh, Shakthi Veronica", ideas: 3, mobile: "9895120570,9080737662" },
+                    { domain: "Site Development", head: "Virusha Tharagan", ideas: 1, mobile: "9087440051" },
+                    { domain: "Cybersecurity", head: "Chinnaya", ideas: 3, mobile: "+91 80565 76531" },
+                    { domain: "Data Analysis", head: "Gokulhari, Vanitha", ideas: 2, mobile: "9092887244,8098458681" }
+                ];
+
+                data.forEach((item) => {
+                    const numbers = item.mobile ? item.mobile.split(',') : [];
+                    const names = item.head.split(',').map(name => name.trim());
+                    const buttons = numbers.map((number, index) => `
+                        <button class="call-btn" onclick="makeCall('${number}')">
+                            <i class="fas fa-phone"></i>
+                            Call ${names[index] || ''}
+                        </button>
+                    `).join('');
+
+                    document.write(`
+                        <div class="card">
+                            <div class="card-header">
+                                <img class="profile" src="/Pi7_Tool_IMG-20250205-WA0023.jpg.png" alt="${item.head}">
+                                <div>
+                                    <span class="domain-badge">${item.domain}</span>
+                                    <div class="head-name">${item.head}</div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="ideas-count">
+                                    <i class="fas fa-lightbulb"></i>
+                                    ${item.ideas} Ideas
+                                </div>
+                                <div class="contact-buttons">
+                                    ${numbers.length > 0 ? buttons : '<span class="na-text">Contact information not available</span>'}
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+
+                function makeCall(number) {
+                    window.location.href = `tel:${number}`;
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>
