@@ -6,7 +6,27 @@
     <title>Team Details</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
-        
+        a {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    color: #60efff;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(96, 239, 255, 0.2);
+}
+
+a:hover {
+    background: linear-gradient(45deg, #00ff87, #60efff);
+    color: #000428;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 255, 135, 0.4);
+}
         * {
             margin: 0;
             padding: 0;
@@ -298,7 +318,8 @@
         </div>
     </div>
     <div class="container" id="teamContainer"></div>
-
+<a href="https://github.com/projectwork11421">&copy; Savage King 
+</a>
     <script>
         const teams = [
             {
