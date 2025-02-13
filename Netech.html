@@ -126,7 +126,7 @@
     <div class="music-player">
         <h1>Enhanced 3D Music Player</h1>
         <audio id="audio" controls>
-            <source id="audioSource" src="https://raw.githubusercontent.com/Ganesha025/Exhibition-/refs/heads/main/Vithai-Vithai-Kadhal.mp3" type="audio/mpeg">
+            <source id="audioSource" src="Sithira-Puthiri-MassTamilan.dev.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
         
@@ -267,23 +267,23 @@
 
                 switch(preset) {
                     case 'normal':
-                        normalBtn.classList.add('active');
-                        updateControls(50, 0, 0, 100);
-                        updateAutoPanning(0);
-                        break;
-                    case 'near':
-                        nearBtn.classList.add('active');
-                        updateControls(80, 20, 30, 120);
-                        updateAutoPanning(50);
-                        break;
-                    case 'environment':
-                        envBtn.classList.add('active');
-                        updateControls(60, 60, 50, 100);
-                        updateAutoPanning(100);
-                        break;
-                    case 'distant':
-                        distantBtn.classList.add('active');
-                        updateControls(40, 80, 70, 80);
+         normalBtn.classList.add('active');
+             updateControls(50, 0, 0, 150);
+                updateAutoPanning(0);
+                 break;
+                case 'near':
+            nearBtn.classList.add('active');
+              updateControls(80, 80, 70, 90);
+                  updateAutoPanning(50);
+                      break;
+              case 'environment':
+            envBtn.classList.add('active');
+            updateControls(80, 80, 80, 75);
+           updateAutoPanning(100);
+               break;
+              case 'distant':
+      distantBtn.classList.add('active');
+          updateControls(100,100, 100, 65);
                         updateAutoPanning(150);
                         break;
                 }
@@ -302,7 +302,7 @@
                 const panWidth = panningRange.value / 100;
               const reverbMix = (reverbRange.value / 100) * 0.55; // Limit max to 50%
 
-                const delayTime = (delayRange.value / 100) * 0.5; // Max delay of 0.5 seconds
+                const delayTime = (delayRange.value / 100) * 0; // Max delay of 0.5 seconds
                 const volume = volumeRange.value / 100;
 
                 // Update value displays
