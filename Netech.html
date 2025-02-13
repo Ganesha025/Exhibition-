@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced 3D Music Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1e1e2e, #2d2d3d);
+            color: #fff;
+        }
+
+        .music-player {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .effect-control {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .effect-control:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .effect-control label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 5px;
+            border-radius: 5px;
+            background: #4a4a5a;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #6c6cff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #8080ff;
+            transform: scale(1.1);
+        }
+
+        .effect-value {
+            min-width: 50px;
+            text-align: right;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: #6c6cff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #8080ff;
+            transform: translateY(-2px);
+        }
+
+        button.active {
+            background-color: #4a4aff;
+            box-shadow: 0 0 10px rgba(108, 108, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="music-player">
+        <h1>Enhanced 3D Music Player</h1>
+        <audio id="audio" controls>
+            <source id="audioSource" src="Vithai-Vithai-Kadhal.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        
+        <div class="preset-buttons">
+            <button id="normalBtn">Normal</button>
+            <button id="nearBtn">Near (8D)</button>
+            <button id="envBtn">Environment (16D)</button>
+            <button id="distantBtn">Distant (32D)</button>
+        </div>
+
+        <div class="controls-container">
+            <div class="effect-control">
+                <label>
+                    Stereo Width
+                    <div class="slider-container">
+                        <input type="range" id="panningRange" min="0" max="100" value="50">
+                        <span class="effect-value" id="panningValue">50%</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="effect-control">
+                <label>
+                    Reverb Amount
+                    <div class="slider-container">
+                        <input type="range" id="reverbRange" min="0" max="100" value="0">
+                        <span class="effect-value" id="reverbValue">0%</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="effect-control">
+                <label>
+                    Echo Delay
+                    <div class="slider-container">
+                        <input type="range" id="delayRange" min="0" max="100" value="0">
+                        <span class="effect-value" id="delayValue">0%</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="effect-control">
+                <label>
+                    Volume
+                    <div class="slider-container">
+                        <input type="range" id="volumeRange" min="0" max="150" value="100">
+                        <span class="effect-value" id="volumeValue">100%</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const audio = document.getElementById('audio');
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create audio nodes
+            const source = audioContext.createMediaElementSource(audio);
+            const stereoPanner = audioContext.createStereoPanner();
+            const convolverNode = audioContext.createConvolver();
+            const delayNode = audioContext.createDelay(5.0);
+            const feedbackNode = audioContext.createGain();
+            const wetGainNode = audioContext.createGain();
+            const dryGainNode = audioContext.createGain();
+            const masterGainNode = audioContext.createGain();
+
+            // Connect nodes
+            source.connect(stereoPanner);
+            
+            // Parallel paths for wet (processed) and dry signals
+            stereoPanner.connect(dryGainNode);
+            stereoPanner.connect(delayNode);
+            delayNode.connect(feedbackNode);
+            feedbackNode.connect(delayNode);
+            delayNode.connect(convolverNode);
+            convolverNode.connect(wetGainNode);
+            
+            // Final mix
+            dryGainNode.connect(masterGainNode);
+            wetGainNode.connect(masterGainNode);
+            masterGainNode.connect(audioContext.destination);
+
+            // Create impulse response for reverb
+            function createImpulseResponse() {
+                const sampleRate = audioContext.sampleRate;
+                const length = 2 * sampleRate; // 2 seconds
+                const impulse = audioContext.createBuffer(2, length, sampleRate);
+                
+                for (let channel = 0; channel < 2; channel++) {
+                    const channelData = impulse.getChannelData(channel);
+                    for (let i = 0; i < length; i++) {
+                        channelData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sampleRate * 0.1));
+                    }
+                }
+                
+                convolverNode.buffer = impulse;
+            }
+
+            createImpulseResponse();
+
+            // Initialize parameters
+            let currentPanPosition = 0;
+            let panningInterval;
+
+            // UI Controls
+            const panningRange = document.getElementById('panningRange');
+            const reverbRange = document.getElementById('reverbRange');
+            const delayRange = document.getElementById('delayRange');
+            const volumeRange = document.getElementById('volumeRange');
+
+            // Value displays
+            const panningValue = document.getElementById('panningValue');
+            const reverbValue = document.getElementById('reverbValue');
+            const delayValue = document.getElementById('delayValue');
+            const volumeValue = document.getElementById('volumeValue');
+
+            // Preset buttons
+            const normalBtn = document.getElementById('normalBtn');
+            const nearBtn = document.getElementById('nearBtn');
+            const envBtn = document.getElementById('envBtn');
+            const distantBtn = document.getElementById('distantBtn');
+
+            function updateAutoPanning(speed) {
+                clearInterval(panningInterval);
+                if (speed > 0) {
+                    panningInterval = setInterval(() => {
+                        currentPanPosition = (currentPanPosition + 0.02) % (Math.PI * 2);
+                        stereoPanner.pan.value = Math.sin(currentPanPosition);
+                    }, speed);
+                }
+            }
+
+            function applyPreset(preset) {
+                // Remove active class from all buttons
+                [normalBtn, nearBtn, envBtn, distantBtn].forEach(btn => btn.classList.remove('active'));
+
+                switch(preset) {
+                    case 'normal':
+                        normalBtn.classList.add('active');
+                        updateControls(50, 0, 0, 100);
+                        updateAutoPanning(0);
+                        break;
+                    case 'near':
+                        nearBtn.classList.add('active');
+                        updateControls(80, 20, 30, 120);
+                        updateAutoPanning(50);
+                        break;
+                    case 'environment':
+                        envBtn.classList.add('active');
+                        updateControls(60, 60, 50, 100);
+                        updateAutoPanning(100);
+                        break;
+                    case 'distant':
+                        distantBtn.classList.add('active');
+                        updateControls(40, 80, 70, 80);
+                        updateAutoPanning(150);
+                        break;
+                }
+            }
+
+            function updateControls(panning, reverb, delay, volume) {
+                panningRange.value = panning;
+                reverbRange.value = reverb;
+                delayRange.value = delay;
+                volumeRange.value = volume;
+                
+                updateEffects();
+            }
+
+            function updateEffects() {
+                const panWidth = panningRange.value / 100;
+              const reverbMix = (reverbRange.value / 100) * 0.55; // Limit max to 50%
+
+                const delayTime = (delayRange.value / 100) * 0.5; // Max delay of 0.5 seconds
+                const volume = volumeRange.value / 100;
+
+                // Update value displays
+                panningValue.textContent = `${panningRange.value}%`;
+                reverbValue.textContent = `${reverbRange.value}%`;
+                delayValue.textContent = `${delayRange.value}%`;
+                volumeValue.textContent = `${volumeRange.value}%`;
+
+                // Apply effects
+                stereoPanner.pan.value = panWidth * 2 - 1;
+                wetGainNode.gain.value = reverbMix;
+                dryGainNode.gain.value = 1 - reverbMix;
+                delayNode.delayTime.value = delayTime;
+                feedbackNode.gain.value = delayRange.value / 200; // Feedback proportional to delay
+                masterGainNode.gain.value = volume;
+            }
+
+            // Event Listeners
+            [panningRange, reverbRange, delayRange, volumeRange].forEach(control => {
+                control.addEventListener('input', updateEffects);
+            });
+
+            normalBtn.addEventListener('click', () => applyPreset('normal'));
+            nearBtn.addEventListener('click', () => applyPreset('near'));
+            envBtn.addEventListener('click', () => applyPreset('environment'));
+            distantBtn.addEventListener('click', () => applyPreset('distant'));
+
+            // Initialize with normal preset
+            applyPreset('normal');
+
+            // Resume AudioContext on user interaction
+            document.addEventListener('click', function() {
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
