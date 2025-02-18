@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 50%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Feedback Form</h2>
+      
+      <label for="college">College Name</label>
+      <select id="college" name="college" required>
+        <option value="">Select College</option>
+        <option value="Kongunadu">Kongunadu Arts and Science</option>
+        <option value="united_institute_of_technology">United Institute of Technology</option>
+        <option value="pioneer_college_of_arts_and_science">Pioneer College of Arts and Science</option>
+        <option value="dr_sns_rajalakshmi_college_of_arts_and_science">Dr. SNS Rajalakshmi College of Arts and Science</option>
+        <option value="kg_college_of_arts_and_science">KG College of Arts and Science</option>
+        <option value="sankara_college_of_science_and_commerce">Sankara College of Science and Commerce</option>
+        <option value="cms_college_of_science_and_commerce">CMS College of Science and Commerce</option>
+        <option value="dr_rv_arts_and_science_college">Dr. R.V. Arts and Science College</option>
+        <option value="vn_krishnasamy_naidu_college_for_women">V.N. Krishnasamy Naidu College of Arts & Science for Women</option>
+        <option value="avinashilingam_institute_for_home_science">Avinashilingam Institute for Home Science & Higher Education for Women</option>
+        <option value="rathinam_college_arts_and_science">Rathinam College Arts and Science College</option>
+      </select>
+
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="roll">Roll Number</label>
+      <input type="text" id="roll" name="roll" required>
+
+      <label for="department">Department</label>
+      <select id="department" name="department" required>
+        <option value="">Select Department</option>
+        <option value="english">English</option>
+        <option value="tamil">Tamil</option>
+        <option value="mathematics">Mathematics</option>
+        <option value="physics">Physics</option>
+        <option value="chemistry">Chemistry</option>
+        <option value="botany">Botany</option>
+        <option value="zoology">Zoology</option>
+        <option value="biochemistry">Biochemistry</option>
+        <option value="computer_science">Computer Science</option>
+        <option value="information_technology">Information Technology</option>
+        <option value="biotechnology">Biotechnology</option>
+        <option value="costume_design_and_fashion">Costume Design and Fashion</option>
+        <option value="psychology">Psychology</option>
+        <option value="commerce">Commerce</option>
+        <option value="business_administration">Business Administration (BBA)</option>
+        <option value="vocational_studies">Vocational Studies (B.Voc.)</option>
+        <option value="artificial_intelligence">Artificial Intelligence and Machine Learning</option>
+      </select>
+
+      <label for="mobile">Mobile Number</label>
+      <input type="tel" id="mobile" name="mobile" required pattern="^\d{10}$" title="Enter a valid 10-digit mobile number">
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="feedback">Feedback</label>
+      <textarea id="feedback" name="feedback" required></textarea>
+
+      <button type="submit" onclick="writeToFirestore(event)" class="btn">Submit Feedback</button>
+    <div id="formMessage" class="error"></div>
+  </div>
+
+  <!-- Include Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAkfexfHIf3JVfzi5V7uFwkpyZb7MTtBg",
+      authDomain: "exhibtion-71384.firebaseapp.com",
+      projectId: "exhibtion-71384",
+      storageBucket: "exhibtion-71384.firebaseapp.com",
+      messagingSenderId: "82937693422",
+      appId: "1:82937693422:web:01462696a13f6c7b5f5fff",
+      measurementId: "G-L6NHXN1KDS"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Function to write form data to Firestore
+    window.writeToFirestore = async function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      try {
+        // Collect form data
+        const formData = {
+          college: document.getElementById('college').value,
+          name: document.getElementById('name').value,
+          roll: document.getElementById('roll').value,
+          department: document.getElementById('department').value,
+          mobile: document.getElementById('mobile').value,
+          email: document.getElementById('email').value,
+          feedback: document.getElementById('feedback').value,
+          timestamp: new Date().toISOString()
+        };
+
+        // Generate a unique document ID based on current timestamp (in milliseconds)
+        const timestampMillis = new Date().getTime().toString();
+
+        // Write data to Firestore under "college" collection with timestamp as document name
+        await setDoc(doc(db, "college", `Data${timestampMillis}`), formData);
+
+        // Show success message and reset form
+        document.getElementById('formMessage').innerText = "Feedback submitted successfully!";
+        document.getElementById('feedbackForm').reset();
+        
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        document.getElementById('formMessage').innerText = "Error submitting your feedback. Please try again!";
+      }
+    };
+  </script>
+
+</body>
+</html>
