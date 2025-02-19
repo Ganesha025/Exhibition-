@@ -3,61 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Data</title>
+    <title>College Data Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel='icon' href='https://www.scorchsoft.com/public/capabilities/head/react-native-logo-square.webp'>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
+ 
+<style>
+        :root {
+            --primary-color: #7C3AED;
+            --secondary-color: #4C1D95;
+            --background-dark: #111827;
+            --card-bg: #1F2937;
+            --text-primary: #F9FAFB;
+            --text-secondary: #D1D5DB;
+            --border-color: #374151;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
         }
-        h1 {
-            text-align: center;
-            color: #333;
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
         }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            background-color: #fff;
-        }
-        table th, table td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        table th {
-            background-color: #4CAF50;
-            color: white;
-        }
+
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .data-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .field-item {
+            padding: 1rem;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .field-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .field-value {
+            color: var(--text-secondary);
+            word-break: break-word;
+        }
+
+        .document-id {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-id i {
+            color: var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .data-card {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #EF4444;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 0.5rem;
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>College Data</h1>
-        <table id="collegeTable">
-            <thead>
-                <tr>
-                    <th>Document ID</th>
-                    <th>Fields</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="dashboard-header">
+            <h1>FeedBack Data </h1>
+        </div>
+        <div id="content" class="data-grid">
+            <div class="loading"></div>
+        </div>
     </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyAAkfexfHIf3JVfzi5V7uFwkpyZb7MTtBg",
             authDomain: "exhibtion-71384.firebaseapp.com",
@@ -67,43 +174,66 @@
             appId: "1:82937693422:web:01462696a13f6c7b5f5fff",
             measurementId: "G-L6NHXN1KDS"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        function createFieldElement(key, value) {
+            const fieldItem = document.createElement('div');
+            fieldItem.className = 'field-item';
+            
+            const label = document.createElement('span');
+            label.className = 'field-label';
+            label.textContent = key;
+            
+            const valueElement = document.createElement('div');
+            valueElement.className = 'field-value';
+            valueElement.textContent = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
+            
+            fieldItem.appendChild(label);
+            fieldItem.appendChild(valueElement);
+            return fieldItem;
+        }
+
         async function fetchCollegeData() {
+            const contentDiv = document.getElementById('content');
             try {
                 const querySnapshot = await getDocs(collection(db, "college"));
-                const tableBody = document.querySelector("#collegeTable tbody");
-                tableBody.innerHTML = '';
-
-                querySnapshot.forEach((doc) => {
+                contentDiv.innerHTML = '';
+                
+                querySnapshot.forEach((doc, index) => {
                     const data = doc.data();
-                    const row = document.createElement("tr");
-                    let fields = '';
+                    const card = document.createElement('div');
+                    card.className = 'data-card';
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    
+                    const docId = document.createElement('div');
+                    docId.className = 'document-id';
+                    docId.innerHTML = `<i class="fas fa-file-alt"></i> Document ID: ${doc.id}`;
+                    
+                    card.appendChild(docId);
+                    
                     for (let key in data) {
-                        let value = data[key];
-                        if (typeof value === 'object') {
-                            value = JSON.stringify(value);
-                        }
-                        fields += `<strong>${key}:</strong> ${value}<br>`;
+                        card.appendChild(createFieldElement(key, data[key]));
                     }
-
-                    row.innerHTML = `
-                        <td>${doc.id}</td>
-                        <td>${fields}</td>
-                    `;
-
-                    tableBody.appendChild(row);
+                    
+                    contentDiv.appendChild(card);
                 });
+                
+                if (querySnapshot.empty) {
+                    contentDiv.innerHTML = '<div class="error-message">No data available</div>';
+                }
             } catch (error) {
                 console.error("Error fetching college data: ", error);
-                const tableBody = document.querySelector("#collegeTable tbody");
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="2">Error loading data: ${error.message}</td>
-                    </tr>
+                contentDiv.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Error loading data: ${error.message}
+                    </div>
                 `;
             }
         }
+
         window.onload = fetchCollegeData;
     </script>
 </body>
