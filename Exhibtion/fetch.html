@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch College Data from Firestore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>College Data</h1>
+        <table id="collegeTable">
+            <thead>
+                <tr>
+                    <th>Document ID</th>
+                    <th>Fields</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data from Firestore will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Import the functions you need from the SDKs you need -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAkfexfHIf3JVfzi5V7uFwkpyZb7MTtBg",
+            authDomain: "exhibtion-71384.firebaseapp.com",
+            projectId: "exhibtion-71384",
+            storageBucket: "exhibtion-71384.firebasestorage.app",
+            messagingSenderId: "82937693422",
+            appId: "1:82937693422:web:01462696a13f6c7b5f5fff",
+            measurementId: "G-L6NHXN1KDS"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Function to fetch and display data
+        async function fetchCollegeData() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "college"));
+                const tableBody = document.querySelector("#collegeTable tbody");
+                
+                // Clear existing table data
+                tableBody.innerHTML = '';
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const row = document.createElement("tr");
+
+                    // Create a new row with the document ID and all the fields
+                    let fields = '';
+                    for (let key in data) {
+                        // Handle different types of data
+                        let value = data[key];
+                        if (typeof value === 'object') {
+                            value = JSON.stringify(value);
+                        }
+                        fields += `<strong>${key}:</strong> ${value}<br>`;
+                    }
+
+                    row.innerHTML = `
+                        <td>${doc.id}</td>
+                        <td>${fields}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching college data: ", error);
+                // Display error message to user
+                const tableBody = document.querySelector("#collegeTable tbody");
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="2">Error loading data: ${error.message}</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Call the fetch function on page load
+        window.onload = fetchCollegeData;
+    </script>
+</body>
+</html>
