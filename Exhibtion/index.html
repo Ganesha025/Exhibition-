@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Feedback Form</title>
+    <link rel='icon' href='https://www.scorchsoft.com/public/capabilities/head/react-native-logo-square.webp'>
+
     <style>
         * {
             margin: 0;
@@ -14,7 +16,8 @@
 
         body {
             min-height: 100vh;
-            display: flex;flex-direction: column;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #0F172A, #1E293B, #0F172A);
@@ -28,10 +31,15 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }a{
-            text-align: center;color:white;
-            border:1px solid white;border-radius: 20px;
-            padding: 15px;text-decoration: none;
+        }
+
+        a {
+            text-align: center;
+            color: white;
+            border: 1px solid white;
+            border-radius: 20px;
+            padding: 15px;
+            text-decoration: none;
         }
 
         .form-container {
@@ -148,51 +156,6 @@
             }
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(148, 163, 184, 0.3);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(148, 163, 184, 0.4);
-        }
-
-        /* Form field icons */
-        .input-group::after {
-            content: '';
-            position: absolute;
-            right: 12px;
-            top: 38px;
-            width: 20px;
-            height: 20px;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        /* Professional animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-
-        .form-container {
-            animation: pulse 2s infinite;
-            animation-play-state: paused;
-        }
-
-
-        /* Responsive adjustments */
         @media (max-width: 480px) {
             .form-container {
                 padding: 24px;
@@ -216,11 +179,13 @@
             <div class="input-group">
                 <label for="school">School Name</label>
                 <select id="school" name="school" required>
-                    <option value="" disabled selected>Select your school</option>
-                    <option value="school1">ABC School</option>
-                    <option value="school2">XYZ International School</option>
-                    <option value="school3">DEF Academy</option>
-                    <option value="school4">GHI High School</option>
+                    <option value="vidya_vikas">Vidya Vikas School</option>
+                    <option value="avb_school">AVB School</option>
+                    <option value="greenfields">Greenfields Matriculation School</option>
+                    <option value="mgm_school">MGM School</option>
+                    <option value="rathinam_international">Rathinam International Public School</option>
+                    <option value="avinashilingam">Avinashilingam Higher Secondary School for Girls</option>
+                    <option value="government_school">Government School</option>
                 </select>
             </div>
 
@@ -231,7 +196,7 @@
 
             <div class="input-group">
                 <label for="class">Class</label>
-                <select id="class" name="class" onchange="showGroup()" required>
+                <select id="class" name="class" onchange="handleClassChange()" required>
                     <option value="" disabled selected>Select your class</option>
                     <option value="9">Class 9</option>
                     <option value="10">Class 10</option>
@@ -242,15 +207,7 @@
 
             <div id="group-container" class="group-container input-group">
                 <label for="group">Specialization Group</label>
-                <select id="group" name="group">
-                    <option value="science_maths">Science - Mathematics</option>
-                    <option value="science_bio">Science - Biology</option>
-                    <option value="science_phy">Science - Physics</option>
-                    <option value="science_chem">Science - Chemistry</option>
-                    <option value="computer_science">Computer Science</option>
-                    <option value="commerce">Commerce</option>
-                    <option value="arts">Arts</option>
-                </select>
+                <input type="text" id="group" name="group" placeholder="Enter your specialization group">
             </div>
 
             <div class="input-group">
@@ -272,8 +229,21 @@
         </form>
     </div>
     <br>
-    <a href="https://kongunaducollege.ac.in/35/department-computer-applications-about-department">&copy;    Developer By BCA</a>
+    <a href="https://kongunaducollege.ac.in/35/department-computer-applications-about-department">&copy; Developer By BCA</a>
 
+    <script>
+        function handleClassChange() {
+            const classSelect = document.getElementById('class');
+            const groupContainer = document.getElementById('group-container');
+            const selectedClass = classSelect.value;
+            
+            if (selectedClass === '11' || selectedClass === '12') {
+                groupContainer.style.display = 'block';
+            } else {
+                groupContainer.style.display = 'none';
+            }
+        }
+    </script>
     <script type="module" src="main.js"></script>
 </body>
 </html>
